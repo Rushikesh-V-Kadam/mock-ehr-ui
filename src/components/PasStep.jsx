@@ -4,17 +4,12 @@ import { shortId, blankToNull } from "../formHelpers.js";
 import ErrorBox from "./ErrorBox.jsx";
 import DecisionView from "./DecisionView.jsx";
 
-/** The order's servicing facility, else the organization of the ordering practitioner, else the first organization. */
-function defaultOrganization(order, practitioners, organizations) {
-  if (order.performerOrganizationId) {
-    return order.performerOrganizationId;
-  }
-  for (let i = 0; i < practitioners.length; i++) {
-    if (practitioners[i].practitionerId === order.orderingPractitionerId && practitioners[i].organizationId) {
-      return practitioners[i].organizationId;
-    }
-  }
-  return organizations.length > 0 ? organizations[0].organizationId : "";
+/**
+ * Default facility (location) for the PAS request: the first location. Like the client's EHR, orders carry no location;
+ * the gateway takes the facility (and place of service) only from orderLocationCode in the request body.
+ */
+function defaultLocation(locations) {
+  return locations.length > 0 ? locations[0].locationId : "";
 }
 
 /**
@@ -26,7 +21,7 @@ export default function PasStep(props) {
   const order = props.order;
   const data = props.data;
   const [requestId, setRequestId] = useState("PA-" + order.orderId.toUpperCase() + "-" + shortId().toUpperCase());
-  const [organizationId, setOrganizationId] = useState(defaultOrganization(order, data.practitioners, data.organizations));
+  const [orderLocationCode, setOrderLocationCode] = useState(defaultLocation(data.locations));
   const [priority, setPriority] = useState(order.priority === "urgent" ? "urgent" : "routine");
   const [documentIds, setDocumentIds] = useState([]);
   const [notes, setNotes] = useState("");
@@ -44,7 +39,7 @@ export default function PasStep(props) {
   const needed = props.decision ? props.decision.callPas : false;
 
   function handleRequestId(event) { setRequestId(event.target.value); }
-  function handleOrganization(event) { setOrganizationId(event.target.value); }
+  function handleLocation(event) { setOrderLocationCode(event.target.value); }
   function handlePriority(event) { setPriority(event.target.value); }
   function handleNotes(event) { setNotes(event.target.value); }
   function handleRequestType(event) { setRequestType(event.target.value); }
@@ -95,7 +90,8 @@ export default function PasStep(props) {
         payerName: props.payerName,
         patientId: props.patient.patientId,
         coverageId: order.coverageId || null,
-        requestingOrganizationId: organizationId,
+        // required by the gateway: the facility (Claim.provider, NPI) and the place of service come only from this code
+        orderLocationCode: orderLocationCode,
         requestingPractitionerId: order.orderingPractitionerId || null,
         orderIds: [order.orderId],
         priority: priority,
@@ -129,8 +125,8 @@ export default function PasStep(props) {
     run(function cancel() { return cancelPriorAuth(paDecision.requestId, "Cancelled from the mock EHR."); });
   }
 
-  function renderOrganization(organization) {
-    return <option key={organization.organizationId} value={organization.organizationId}>{organization.name} (NPI {organization.npi})</option>;
+  function renderLocation(location) {
+    return <option key={location.locationId} value={location.locationId}>{location.name} ({location.locationId}, NPI {location.npi || "none"}, POS {location.placeOfServiceCode || "none"})</option>;
   }
 
   function renderPractitioner(practitioner) {
@@ -180,9 +176,10 @@ export default function PasStep(props) {
           {completedForms > 0 ? <div className="alert alert-info">{completedForms} completed questionnaire(s) will be attached automatically.</div> : null}
           <div className="grid">
             <label>Request id<input value={requestId} onChange={handleRequestId} required /></label>
-            <label>Servicing facility (requesting organization)
-              <select value={organizationId} onChange={handleOrganization} required>
-                {data.organizations.map(renderOrganization)}
+            <label>Facility (orderLocationCode)
+              <select value={orderLocationCode} onChange={handleLocation} required>
+                {data.locations.length === 0 ? <option value="">(no locations)</option> : null}
+                {data.locations.map(renderLocation)}
               </select>
             </label>
             <label>Priority
@@ -219,7 +216,7 @@ export default function PasStep(props) {
           {data.documents.length > 0 ? <div className="checks">{data.documents.map(renderDocument)}</div> : <p className="muted small">No documents on file (add them on the Documents tab).</p>}
           <label className="wide">Note for the reviewer<textarea value={notes} onChange={handleNotes} rows={2} maxLength={264} /></label>
           <div className="actions">
-            <button type="submit" className="primary" disabled={busy || !props.payerName || !organizationId}>{busy ? "Sending..." : "Submit prior authorization"}</button>
+            <button type="submit" className="primary" disabled={busy || !props.payerName || !orderLocationCode}>{busy ? "Sending..." : "Submit prior authorization"}</button>
           </div>
         </form>
       ) : null}

@@ -212,7 +212,7 @@ export default function OrderWorkflow(props) {
       <div className="workflow-head">
         <div>
           <h3>Prior authorization &middot; {order.orderId}</h3>
-          <div className="muted">{order.codeSystem} {order.code} {order.codeDisplay} &middot; qty {order.quantity} &middot; POS {order.placeOfServiceCode}</div>
+          <div className="muted">{order.codeSystem} {order.code} {order.codeDisplay} &middot; qty {order.quantity}</div>
         </div>
         <label className="inline">Payer
           <select value={payerName} onChange={handlePayerChange}>

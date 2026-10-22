@@ -14,48 +14,48 @@ const PRESETS = [
   { key: "", label: "(choose to fill the form)" },
   // treatment codes
   { key: "g0491", label: "G0491 Dialysis - AKI (PA + AKI questionnaire)", orderType: "service", codeSystem: "HCPCS", code: "G0491",
-    codeDisplay: "Dialysis for acute kidney injury (without ESRD)", dx: "N17.9", dxDisplay: "Acute kidney failure, unspecified", pos: "65", quantity: "12" },
+    codeDisplay: "Dialysis for acute kidney injury (without ESRD)", dx: "N17.9", dxDisplay: "Acute kidney failure, unspecified", quantity: "12" },
   { key: "90935", label: "90935 In-center hemo x39 (PA + questionnaire + lab report)", orderType: "service", codeSystem: "CPT", code: "90935",
-    codeDisplay: "In-center hemodialysis, 3 times a week", dx: "N18.6", dxDisplay: "End stage renal disease", pos: "65", quantity: "39" },
+    codeDisplay: "In-center hemodialysis, 3 times a week", dx: "N18.6", dxDisplay: "End stage renal disease", quantity: "39" },
   { key: "90937", label: "90937 In-center hemo, repeated evaluation (PA + questionnaire)", orderType: "service", codeSystem: "CPT", code: "90937",
-    codeDisplay: "In-center hemodialysis, repeated evaluation", dx: "N18.6", dxDisplay: "End stage renal disease", pos: "65", quantity: "39" },
+    codeDisplay: "In-center hemodialysis, repeated evaluation", dx: "N18.6", dxDisplay: "End stage renal disease", quantity: "39" },
   { key: "90945", label: "90945 Home peritoneal (PA + adaptive questionnaire)", orderType: "service", codeSystem: "CPT", code: "90945",
-    codeDisplay: "Home peritoneal dialysis", dx: "N18.6", dxDisplay: "End stage renal disease", pos: "12", quantity: "1" },
+    codeDisplay: "Home peritoneal dialysis", dx: "N18.6", dxDisplay: "End stage renal disease", quantity: "1" },
   { key: "90999", label: "90999 NxStage home hemo (PA + adaptive questionnaire)", orderType: "service", codeSystem: "CPT", code: "90999",
-    codeDisplay: "Home hemodialysis (NxStage)", dx: "N18.6", dxDisplay: "End stage renal disease", pos: "12", quantity: "1" },
+    codeDisplay: "Home hemodialysis (NxStage)", dx: "N18.6", dxDisplay: "End stage renal disease", quantity: "1" },
   { key: "90989", label: "90989 Home training, completed course (PA only)", orderType: "service", codeSystem: "CPT", code: "90989",
-    codeDisplay: "Home dialysis training, completed course", dx: "N18.6", dxDisplay: "End stage renal disease", pos: "65", quantity: "1" },
+    codeDisplay: "Home dialysis training, completed course", dx: "N18.6", dxDisplay: "End stage renal disease", quantity: "1" },
   { key: "90993", label: "90993 Home training, per session (PA only, max 25)", orderType: "service", codeSystem: "CPT", code: "90993",
-    codeDisplay: "Home dialysis training, per session", dx: "N18.6", dxDisplay: "End stage renal disease", pos: "65", quantity: "20" },
+    codeDisplay: "Home dialysis training, per session", dx: "N18.6", dxDisplay: "End stage renal disease", quantity: "20" },
   // drug codes (quantity in billing units)
   { key: "q5105", label: "Q5105 Retacrit - units of 100 (PA + ESA questionnaire)", orderType: "medication", codeSystem: "HCPCS", code: "Q5105",
     codeDisplay: "Retacrit (epoetin alfa-epbx), 100 units", dx: "D63.1", dxDisplay: "Anemia in chronic kidney disease", dx2: "N18.6", dx2Display: "End stage renal disease",
-    pos: "65", quantity: "1560", notes: "4,000 units IV with each dialysis treatment (3 times a week)" },
+    quantity: "1560", notes: "4,000 units IV with each dialysis treatment (3 times a week)" },
   { key: "j0882", label: "J0882 Aranesp - mcg (PA + ESA questionnaire)", orderType: "medication", codeSystem: "HCPCS", code: "J0882",
     codeDisplay: "Aranesp (darbepoetin alfa), 1 mcg", dx: "D63.1", dxDisplay: "Anemia in chronic kidney disease", dx2: "N18.6", dx2Display: "End stage renal disease",
-    pos: "65", quantity: "520", notes: "40 mcg IV once a week with dialysis" },
+    quantity: "520", notes: "40 mcg IV once a week with dialysis" },
   { key: "j0887", label: "J0887 Mircera - mcg (PA + ESA questionnaire)", orderType: "medication", codeSystem: "HCPCS", code: "J0887",
     codeDisplay: "Mircera (methoxy polyethylene glycol-epoetin beta), 1 mcg", dx: "D63.1", dxDisplay: "Anemia in chronic kidney disease", dx2: "N18.6", dx2Display: "End stage renal disease",
-    pos: "65", quantity: "300", notes: "100 mcg IV once a month" },
+    quantity: "300", notes: "100 mcg IV once a month" },
   { key: "j1756", label: "J1756 Venofer - mg (PA + iron questionnaire)", orderType: "medication", codeSystem: "HCPCS", code: "J1756",
     codeDisplay: "Venofer (iron sucrose), 1 mg", dx: "D50.9", dxDisplay: "Iron deficiency anemia, unspecified", dx2: "N18.6", dx2Display: "End stage renal disease",
-    pos: "65", quantity: "1000", notes: "100 mg IV with 10 consecutive dialysis treatments" },
+    quantity: "1000", notes: "100 mg IV with 10 consecutive dialysis treatments" },
   { key: "j0606", label: "J0606 Parsabiv - units of 0.1 mg (PA + hyperparathyroidism questionnaire)", orderType: "medication", codeSystem: "HCPCS", code: "J0606",
     codeDisplay: "Parsabiv (etelcalcetide), 0.1 mg", dx: "N25.81", dxDisplay: "Secondary hyperparathyroidism of renal origin", dx2: "N18.6", dx2Display: "End stage renal disease",
-    pos: "65", quantity: "1950", notes: "5 mg IV 3 times a week at the end of dialysis" },
+    quantity: "1950", notes: "5 mg IV 3 times a week at the end of dialysis" },
   { key: "j0604", label: "J0604 Sensipar - mg (not covered: pharmacy benefit)", orderType: "medication", codeSystem: "HCPCS", code: "J0604",
     codeDisplay: "Sensipar (cinacalcet, oral), 1 mg", dx: "N25.81", dxDisplay: "Secondary hyperparathyroidism of renal origin", dx2: "N18.6", dx2Display: "End stage renal disease",
-    pos: "65", quantity: "2700", notes: "30 mg by mouth once daily" },
+    quantity: "2700", notes: "30 mg by mouth once daily" },
   { key: "j2501", label: "J2501 Zemplar - mcg (no PA)", orderType: "medication", codeSystem: "HCPCS", code: "J2501",
     codeDisplay: "Zemplar (paricalcitol), 1 mcg", dx: "N25.81", dxDisplay: "Secondary hyperparathyroidism of renal origin", dx2: "N18.6", dx2Display: "End stage renal disease",
-    pos: "65", quantity: "156", notes: "4 mcg IV 3 times a week with dialysis" }
+    quantity: "156", notes: "4 mcg IV 3 times a week with dialysis" }
 ];
 
 const EMPTY = {
   preset: "", orderType: "service", codeSystem: "CPT", code: "", codeDisplay: "", quantity: "1",
-  requestedStartDate: "", requestedEndDate: "", orderingPractitionerId: "", locationId: "", placeOfServiceCode: "11",
+  requestedStartDate: "", requestedEndDate: "", orderingPractitionerId: "",
   coverageId: "", dx: "", dxDisplay: "", dx2: "", dx2Display: "", priority: "routine", notes: "",
-  performerOrganizationId: "", referringPractitionerId: "", requestType: "new", patientType: "permanent",
+  referringPractitionerId: "", requestType: "new", patientType: "permanent",
   previousAuthorizationNumber: "", previousStartDate: "", previousEndDate: "", previousTreatments: ""
 };
 
@@ -88,21 +88,9 @@ export default function OrdersSection(props) {
         copy.dx = preset.dx;
         copy.dxDisplay = preset.dxDisplay;
         copy.quantity = preset.quantity || "1";
-        copy.placeOfServiceCode = preset.pos || "11";
         copy.dx2 = preset.dx2 || "";
         copy.dx2Display = preset.dx2Display || "";
         copy.notes = preset.notes || "";
-      }
-    }
-    setForm(copy);
-  }
-
-  function handleLocation(event) {
-    const locationId = event.target.value;
-    const copy = Object.assign({}, form, { locationId: locationId });
-    for (let i = 0; i < data.locations.length; i++) {
-      if (data.locations[i].locationId === locationId && data.locations[i].placeOfServiceCode) {
-        copy.placeOfServiceCode = data.locations[i].placeOfServiceCode;
       }
     }
     setForm(copy);
@@ -126,10 +114,12 @@ export default function OrdersSection(props) {
         code: form.code.trim(), codeSystem: form.codeSystem, codeDisplay: blankToNull(form.codeDisplay),
         quantity: form.quantity ? Number(form.quantity) : null,
         requestedStartDate: blankToNull(form.requestedStartDate), requestedEndDate: blankToNull(form.requestedEndDate),
-        orderingPractitionerId: blankToNull(form.orderingPractitionerId), locationId: blankToNull(form.locationId),
-        placeOfServiceCode: blankToNull(form.placeOfServiceCode), coverageId: blankToNull(form.coverageId) || firstCoverage,
+        // Like the client's EHR, an order carries no location, facility or place of service: the facility is chosen
+        // in the PAS step (orderLocationCode of the PAS request).
+        orderingPractitionerId: blankToNull(form.orderingPractitionerId),
+        coverageId: blankToNull(form.coverageId) || firstCoverage,
         diagnoses: diagnoses, priority: form.priority, notes: blankToNull(form.notes),
-        performerOrganizationId: blankToNull(form.performerOrganizationId), referringPractitionerId: blankToNull(form.referringPractitionerId),
+        referringPractitionerId: blankToNull(form.referringPractitionerId),
         requestType: form.requestType, patientType: form.patientType,
         previousAuthorizationNumber: form.requestType === "renewal" ? blankToNull(form.previousAuthorizationNumber) : null,
         previousStartDate: form.requestType === "renewal" ? blankToNull(form.previousStartDate) : null,
@@ -164,12 +154,6 @@ export default function OrdersSection(props) {
   function renderPractitioner(practitioner) {
     return <option key={practitioner.practitionerId} value={practitioner.practitionerId}>{practitioner.prefix} {practitioner.firstName} {practitioner.lastName} (NPI {practitioner.npi})</option>;
   }
-  function renderOrganization(organization) {
-    return <option key={organization.organizationId} value={organization.organizationId}>{organization.name} (NPI {organization.npi}, TIN {organization.taxId})</option>;
-  }
-  function renderLocation(location) {
-    return <option key={location.locationId} value={location.locationId}>{location.name} (POS {location.placeOfServiceCode})</option>;
-  }
   function renderCoverage(insurance) {
     return <option key={insurance.coverageId} value={insurance.coverageId}>{insurance.payerName} - {insurance.memberId}</option>;
   }
@@ -186,7 +170,6 @@ export default function OrdersSection(props) {
         <td>{order.orderType}</td>
         <td>{diagnosis}</td>
         <td>{order.quantity}</td>
-        <td>{order.placeOfServiceCode}</td>
         <td><StatusBadge value={order.status} /></td>
         <td><button type="button" className={selected ? "primary" : ""} data-id={order.orderId} onClick={handleSelect}>Prior auth &rarr;</button></td>
       </tr>
@@ -232,12 +215,6 @@ export default function OrdersSection(props) {
             {form.requestType === "renewal" ? <label>Previous DOS from<input type="date" name="previousStartDate" value={form.previousStartDate} onChange={handleChange} /></label> : null}
             {form.requestType === "renewal" ? <label>Previous DOS to<input type="date" name="previousEndDate" value={form.previousEndDate} onChange={handleChange} /></label> : null}
             {form.requestType === "renewal" ? <label>Previous # of treatments<input type="number" min="0" name="previousTreatments" value={form.previousTreatments} onChange={handleChange} /></label> : null}
-            <label>Servicing facility
-              <select name="performerOrganizationId" value={form.performerOrganizationId} onChange={handleChange}>
-                <option value="">(none)</option>
-                {data.organizations.map(renderOrganization)}
-              </select>
-            </label>
             <label>Referring physician
               <select name="referringPractitionerId" value={form.referringPractitionerId} onChange={handleChange}>
                 <option value="">(none)</option>
@@ -278,13 +255,6 @@ export default function OrdersSection(props) {
                 {data.practitioners.map(renderPractitioner)}
               </select>
             </label>
-            <label>Location
-              <select name="locationId" value={form.locationId} onChange={handleLocation}>
-                <option value="">(none)</option>
-                {data.locations.map(renderLocation)}
-              </select>
-            </label>
-            <label>Place of service<input name="placeOfServiceCode" value={form.placeOfServiceCode} onChange={handleChange} /></label>
             <label>Insurance
               <select name="coverageId" value={form.coverageId} onChange={handleChange}>
                 <option value="">(first on file)</option>
@@ -305,7 +275,7 @@ export default function OrdersSection(props) {
       ) : null}
 
       <table className="table">
-        <thead><tr><th>Order</th><th>Code</th><th>Type</th><th>Dx</th><th>Qty</th><th>POS</th><th>Status</th><th></th></tr></thead>
+        <thead><tr><th>Order</th><th>Code</th><th>Type</th><th>Dx</th><th>Qty</th><th>Status</th><th></th></tr></thead>
         <tbody>{data.orders.map(renderRow)}</tbody>
       </table>
       {data.orders.length === 0 ? <p className="muted">No orders yet.</p> : null}
