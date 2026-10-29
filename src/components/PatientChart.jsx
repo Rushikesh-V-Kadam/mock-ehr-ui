@@ -3,7 +3,6 @@ import {
   getPatient, updatePatient, listInsurances, listOrders, listDocuments, listConditions, listObservations,
   listPractitioners, listOrganizations, listLocations
 } from "../api/ehrApi.js";
-import { listPayers } from "../api/gatewayApi.js";
 import { patientName } from "../formHelpers.js";
 import ErrorBox from "./ErrorBox.jsx";
 import PatientForm from "./PatientForm.jsx";
@@ -23,9 +22,8 @@ export default function PatientChart(props) {
   const [editing, setEditing] = useState(false);
   const [data, setData] = useState({
     insurances: [], orders: [], documents: [], conditions: [], observations: [],
-    practitioners: [], organizations: [], locations: [], payers: []
+    practitioners: [], organizations: [], locations: []
   });
-  const [payerError, setPayerError] = useState(null);
   const [error, setError] = useState(null);
 
   async function loadAll() {
@@ -36,16 +34,9 @@ export default function PatientChart(props) {
         listConditions(patientId), listObservations(patientId), listPractitioners(), listOrganizations(), listLocations()
       ]);
       setPatient(results[0]);
-      let payers = [];
-      try {
-        payers = await listPayers();
-        setPayerError(null);
-      } catch (gatewayError) {
-        setPayerError(gatewayError);
-      }
       setData({
         insurances: results[1], orders: results[2], documents: results[3], conditions: results[4], observations: results[5],
-        practitioners: results[6], organizations: results[7], locations: results[8], payers: payers
+        practitioners: results[6], organizations: results[7], locations: results[8]
       });
     } catch (loadError) {
       setError(loadError);
@@ -100,7 +91,7 @@ export default function PatientChart(props) {
 
   let body = null;
   if (tab === "insurance") {
-    body = <InsuranceSection patientId={patientId} insurances={data.insurances} payers={data.payers} onChanged={loadAll} />;
+    body = <InsuranceSection patientId={patientId} insurances={data.insurances} onChanged={loadAll} />;
   } else if (tab === "clinical") {
     body = <ClinicalSection patientId={patientId} conditions={data.conditions} observations={data.observations} onChanged={loadAll} />;
   } else if (tab === "documents") {
@@ -128,10 +119,6 @@ export default function PatientChart(props) {
           <button type="button" onClick={startEdit}>Edit</button>
         </div>
       )}
-
-      {payerError ? (
-        <div className="alert alert-warn">Payer Gateway not reachable ({payerError.message}). Coverage checks and prior auth need it; check Settings.</div>
-      ) : null}
 
       <div className="tabs">{tabs.map(renderTab)}</div>
       {body}

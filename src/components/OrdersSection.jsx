@@ -61,7 +61,7 @@ const EMPTY = {
 
 /**
  * Orders of the patient: list, "New order" form, and the prior auth workflow of the selected order.
- * props: patient, data (insurances, orders, practitioners, locations, organizations, documents, payers), onChanged.
+ * props: patient, data (insurances, orders, practitioners, locations, organizations, documents), onChanged.
  */
 export default function OrdersSection(props) {
   const data = props.data;

@@ -6,9 +6,9 @@ import StatusBadge from "./StatusBadge.jsx";
 import JsonView from "./JsonView.jsx";
 
 /**
- * STEP 1 - CRD. "Sign order" sends POST /api/v1/crd/order-sign and shows the payer's answer for this order:
+ * STEP 1 - CRD. "Sign order" sends POST /crd/order-sign and shows the payer's answer for this order:
  * covered, pa-needed, doc-needed, questionnaires, and what to do next (callDtr / callPas).
- * props: patient, order, payerName, decision, crdResponse, onDone(response, decision), onOpenQuestionnaire().
+ * props: patient, order, piInsurancePlanId, decision, crdResponse, onDone(response, decision), onOpenQuestionnaire().
  */
 export default function CrdStep(props) {
   const [busy, setBusy] = useState(false);
@@ -21,7 +21,7 @@ export default function CrdStep(props) {
     try {
       const response = await orderSign({
         eventId: "evt-" + props.order.orderId + "-" + shortId(),
-        payerName: props.payerName,
+        piInsurancePlanId: props.piInsurancePlanId,
         patientId: props.patient.patientId,
         orderIds: [props.order.orderId],
         coverageId: props.order.coverageId || null,
@@ -148,7 +148,7 @@ export default function CrdStep(props) {
           type="button"
           className="primary"
           onClick={handleSign}
-          disabled={busy || !props.payerName}
+          disabled={busy || props.piInsurancePlanId == null}
         >
           {busy ? "Asking payer..." : decision ? "Sign again" : "Sign order"}
         </button>
@@ -211,7 +211,7 @@ export default function CrdStep(props) {
         </div>
       ) : (
         <p className="muted">
-          Not signed yet. Signing asks {props.payerName || "the payer"} whether
+          Not signed yet. Signing asks the payer whether
           this order needs prior authorization.
         </p>
       )}

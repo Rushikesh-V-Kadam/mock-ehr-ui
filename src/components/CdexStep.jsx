@@ -8,7 +8,7 @@ import JsonView from "./JsonView.jsx";
  * STEP 4 - CDex. When the payer pends the request it can ask for more (information requests). This step shows them,
  * gets any requested questionnaire (then fill it in step 2), and sends more documents / completed forms
  * ($submit-attachment). With "final" the gateway asks the payer for the new decision right away.
- * props: patient, order, payerName, paDecision, forms, data, onDecision(decision), onFormsCreated(forms).
+ * props: patient, order, piInsurancePlanId, paDecision, forms, data, onDecision(decision), onFormsCreated(forms).
  */
 export default function CdexStep(props) {
   const paDecision = props.paDecision;
@@ -44,7 +44,7 @@ export default function CdexStep(props) {
     setError(null);
     try {
       const forms = await createForms({
-        payerName: props.payerName,
+        piInsurancePlanId: props.piInsurancePlanId,
         patientId: props.patient.patientId,
         orderIds: [props.order.orderId],
         coverageId: props.order.coverageId || null,

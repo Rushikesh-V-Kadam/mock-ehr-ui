@@ -4,10 +4,10 @@ import ErrorBox from "./ErrorBox.jsx";
 import StatusBadge from "./StatusBadge.jsx";
 
 /**
- * STEP 2 - DTR. "Get questionnaire" asks the gateway for the payer's questionnaire (POST /api/v1/dtr/forms).
+ * STEP 2 - DTR. "Get questionnaire" asks the gateway for the payer's questionnaire (POST /dtr/forms).
  * "Open questionnaire" opens the form in the separate questionnaire app (new window). When the app saves the
  * answers, it tells this window and the status here is refreshed. Completed forms are attached to PAS automatically.
- * props: patient, order, payerName, decision, forms, onFormsCreated(forms), onRefresh().
+ * props: patient, order, piInsurancePlanId, decision, forms, onFormsCreated(forms), onRefresh().
  */
 export default function DtrStep(props) {
   const [busy, setBusy] = useState(false);
@@ -20,7 +20,7 @@ export default function DtrStep(props) {
     setError(null);
     try {
       const forms = await createForms({
-        payerName: props.payerName,
+        piInsurancePlanId: props.piInsurancePlanId,
         patientId: props.patient.patientId,
         orderIds: [props.order.orderId],
         coverageId: props.order.coverageId || null,
@@ -77,7 +77,7 @@ export default function DtrStep(props) {
       <div className="step-head">
         <span className="step-number">2</span>
         <h4>Payer questionnaire (DTR)</h4>
-        <button type="button" onClick={handleGetQuestionnaire} disabled={busy || !props.payerName}>
+        <button type="button" onClick={handleGetQuestionnaire} disabled={busy || props.piInsurancePlanId == null}>
           {busy ? "Getting..." : props.forms.length > 0 ? "Get again" : "Get questionnaire"}
         </button>
         {props.forms.length > 0 ? <button type="button" onClick={handleRefresh}>Refresh status</button> : null}

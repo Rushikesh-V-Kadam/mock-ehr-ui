@@ -13,9 +13,9 @@ function defaultLocation(locations) {
 }
 
 /**
- * STEP 3 - PAS. Submits the prior authorization (POST /api/v1/pas/requests) with the chosen clinical documents;
+ * STEP 3 - PAS. Submits the prior authorization (POST /pas/requests) with the chosen clinical documents;
  * completed questionnaires of the order are attached by the gateway. Then: refresh, ask the payer ($inquire), cancel.
- * props: patient, order, payerName, decision, forms, data, paDecision, onDecision(decision).
+ * props: patient, order, piInsurancePlanId, decision, forms, data, paDecision, onDecision(decision).
  */
 export default function PasStep(props) {
   const order = props.order;
@@ -87,7 +87,7 @@ export default function PasStep(props) {
     run(function submit() {
       return submitPriorAuth({
         requestId: requestId.trim(),
-        payerName: props.payerName,
+        piInsurancePlanId: props.piInsurancePlanId,
         patientId: props.patient.patientId,
         coverageId: order.coverageId || null,
         // required by the gateway: the facility (Claim.provider, NPI) and the place of service come only from this code
@@ -216,7 +216,7 @@ export default function PasStep(props) {
           {data.documents.length > 0 ? <div className="checks">{data.documents.map(renderDocument)}</div> : <p className="muted small">No documents on file (add them on the Documents tab).</p>}
           <label className="wide">Note for the reviewer<textarea value={notes} onChange={handleNotes} rows={2} maxLength={264} /></label>
           <div className="actions">
-            <button type="submit" className="primary" disabled={busy || !props.payerName || !orderLocationCode}>{busy ? "Sending..." : "Submit prior authorization"}</button>
+            <button type="submit" className="primary" disabled={busy || props.piInsurancePlanId == null || !orderLocationCode}>{busy ? "Sending..." : "Submit prior authorization"}</button>
           </div>
         </form>
       ) : null}

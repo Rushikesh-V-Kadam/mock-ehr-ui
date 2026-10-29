@@ -31,8 +31,11 @@ function saveFormIds(orderId, formIds) {
   }
 }
 
-/** The gateway payer for the order's insurance (matched on payer name or display name), else the first payer. */
-function defaultPayerName(order, insurances, payers) {
+/**
+ * The insurance plan id of the order's insurance (or of the patient's first insurance), as text for the input field.
+ * Empty when the insurance has none: the user then types it.
+ */
+function defaultPlanId(order, insurances) {
   let insurance = null;
   for (let i = 0; i < insurances.length; i++) {
     if (insurances[i].coverageId === order.coverageId) {
@@ -42,21 +45,19 @@ function defaultPayerName(order, insurances, payers) {
   if (!insurance && insurances.length > 0) {
     insurance = insurances[0];
   }
-  if (insurance) {
-    const wanted = String(insurance.payerName || "").toLowerCase();
-    for (let i = 0; i < payers.length; i++) {
-      const name = String(payers[i].payerName).toLowerCase();
-      const display = String(payers[i].displayName || "").toLowerCase();
-      if (wanted === name || wanted === display) {
-        return payers[i].payerName;
-      }
-    }
-    if (insurance.payerName) {
-      // not a gateway payer: send it anyway, so the gateway answers "payer not configured"
-      return insurance.payerName;
-    }
+  if (insurance && insurance.piInsurancePlanId != null) {
+    return String(insurance.piInsurancePlanId);
   }
-  return payers.length > 0 ? payers[0].payerName : "";
+  return "";
+}
+
+/** The plan id typed in the field as a whole number, or null when it is empty or not a whole number. */
+function toPlanId(text) {
+  const value = String(text || "").trim();
+  if (!/^[0-9]+$/.test(value)) {
+    return null;
+  }
+  return parseInt(value, 10);
 }
 
 /**
@@ -70,7 +71,8 @@ function defaultPayerName(order, insurances, payers) {
 export default function OrderWorkflow(props) {
   const order = props.order;
   const data = props.data;
-  const [payerName, setPayerName] = useState(defaultPayerName(order, data.insurances, data.payers));
+  const [planIdText, setPlanIdText] = useState(defaultPlanId(order, data.insurances));
+  const piInsurancePlanId = toPlanId(planIdText);
   const [decision, setDecision] = useState(null);
   const [crdResponse, setCrdResponse] = useState(null);
   const [forms, setForms] = useState([]);
@@ -148,7 +150,7 @@ export default function OrderWorkflow(props) {
   /**
    * "Open questionnaire" from the coverage card (the payer's DTR link). There is no payer SMART app yet, so instead of
    * following the payer's link we open our own questionnaire app: use the order's open form, or get the payer's
-   * questionnaire from the gateway first (POST /api/v1/dtr/forms).
+   * questionnaire from the gateway first (POST /dtr/forms).
    * The window is opened right away (during the click) so the browser does not block it as a pop-up.
    */
   async function openQuestionnaire() {
@@ -163,7 +165,7 @@ export default function OrderWorkflow(props) {
       }
       if (!target) {
         const created = await createForms({
-          payerName: payerName,
+          piInsurancePlanId: piInsurancePlanId,
           patientId: props.patient.patientId,
           orderIds: [order.orderId],
           coverageId: order.coverageId || null,
@@ -189,22 +191,8 @@ export default function OrderWorkflow(props) {
     }
   }
 
-  function handlePayerChange(event) {
-    setPayerName(event.target.value);
-  }
-
-  /** True when the payer name is one of the payers the gateway returned (GET /api/v1/payers). */
-  function isGatewayPayer(name) {
-    for (let i = 0; i < data.payers.length; i++) {
-      if (data.payers[i].payerName === name) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  function renderPayerOption(payer) {
-    return <option key={payer.payerName} value={payer.payerName}>{payer.displayName} ({payer.payerName})</option>;
+  function handlePlanIdChange(event) {
+    setPlanIdText(event.target.value);
   }
 
   return (
@@ -214,27 +202,23 @@ export default function OrderWorkflow(props) {
           <h3>Prior authorization &middot; {order.orderId}</h3>
           <div className="muted">{order.codeSystem} {order.code} {order.codeDisplay} &middot; qty {order.quantity}</div>
         </div>
-        <label className="inline">Payer
-          <select value={payerName} onChange={handlePayerChange}>
-            {data.payers.length === 0 ? <option value="">(gateway not reachable)</option> : null}
-            {data.payers.map(renderPayerOption)}
-            {payerName && !isGatewayPayer(payerName) ? <option value={payerName}>{payerName} (not configured in the gateway)</option> : null}
-          </select>
+        <label className="inline">Insurance plan id
+          <input type="number" min="1" step="1" value={planIdText} onChange={handlePlanIdChange} placeholder="1001" />
         </label>
       </div>
       <ErrorBox error={error} />
 
-      <CrdStep patient={props.patient} order={order} payerName={payerName} decision={decision} crdResponse={crdResponse} onDone={handleCrdDone}
+      <CrdStep patient={props.patient} order={order} piInsurancePlanId={piInsurancePlanId} decision={decision} crdResponse={crdResponse} onDone={handleCrdDone}
                onOpenQuestionnaire={openQuestionnaire} />
 
-      <DtrStep patient={props.patient} order={order} payerName={payerName} decision={decision} forms={forms}
+      <DtrStep patient={props.patient} order={order} piInsurancePlanId={piInsurancePlanId} decision={decision} forms={forms}
                onFormsCreated={handleFormsCreated} onRefresh={refreshForms} />
 
-      <PasStep patient={props.patient} order={order} payerName={payerName} decision={decision} forms={forms} data={data}
+      <PasStep patient={props.patient} order={order} piInsurancePlanId={piInsurancePlanId} decision={decision} forms={forms} data={data}
                paDecision={paDecision} onDecision={setPaDecision} />
 
       {paDecision ? (
-        <CdexStep patient={props.patient} order={order} payerName={payerName} paDecision={paDecision} forms={forms} data={data}
+        <CdexStep patient={props.patient} order={order} piInsurancePlanId={piInsurancePlanId} paDecision={paDecision} forms={forms} data={data}
                   onDecision={setPaDecision} onFormsCreated={handleFormsCreated} />
       ) : null}
     </div>
